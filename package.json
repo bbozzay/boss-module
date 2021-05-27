@@ -1,0 +1,39 @@
+{
+  "name": "nuxt-boss",
+  "version": "1.0.0",
+  "description": "Gated content learning management system for static sites built on Nuxt.",
+  "main": "lib/module.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bbozzay/nuxt-boss.git"
+  },
+  "keywords": [
+    "nuxt",
+    "lms",
+    "\"gated",
+    "content\"",
+    "jamstack"
+  ],  
+  "dependencies": {
+    "@babel/runtime": "^7.13.10",
+    "base64url": "^3.0.1",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.13.15",
+    "@nuxt/test-utils": "^0.2.0",
+    "luminous-lightbox": "^2.3.3"
+  },
+  "author": "Ben Bozzay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bbozzay/nuxt-boss/issues"
+  },
+  "homepage": "https://github.com/bbozzay/nuxt-boss#readme"
+}
