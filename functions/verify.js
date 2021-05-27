@@ -1,4 +1,4 @@
-const { requireAuth } = require('../lib/functions/helpers/requireAuth');
+const { requireAuth } = require('./permissions/helpers/requireAuth');
 
 exports.handler = requireAuth(async (event, context) => {
   // The user information is available here.

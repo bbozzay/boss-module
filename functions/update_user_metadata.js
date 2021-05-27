@@ -1,5 +1,5 @@
-const { requireAuth } = require('../lib/functions/helpers/requireAuth');
-const { management } = require("../lib/functions/user_metadata/write/management");
+const { requireAuth } = require('./permissions/helpers/requireAuth');
+const { management } = require("./permissions/user_metadata/write/management");
 // get a token with the required scope
 exports.handler = requireAuth(async function(event, context) {
   try {

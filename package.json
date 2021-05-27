@@ -24,7 +24,8 @@
     "@babel/runtime": "^7.13.10",
     "base64url": "^3.0.1",
     "node-fetch": "^2.6.1",
-    "@nuxtjs/auth-next": "5.0.0-1613647907.37b1156"
+    "@nuxtjs/auth-next": "5.0.0-1613647907.37b1156",
+    "auth0": "^2.34.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.13.15",

@@ -1,5 +1,5 @@
-const { management } = require("../lib/functions/metadata/read/management");
-const { requireAuth } = require("../lib/functions/helpers/requireAuth")
+const { management } = require("./permissions/metadata/read/management");
+const { requireAuth } = require("./permissions/helpers/requireAuth")
 
 exports.handler = requireAuth(async(event, context) => {
   try {

@@ -1,6 +1,6 @@
-const { stripe } = require("../lib/functions/helpers/stripe");
-const { getSelectedPlan } = require("../lib/functions/helpers/data");
-const { requireAuth } = require("../lib/functions/helpers/requireAuth")
+const { stripe } = require("./permissions/helpers/stripe");
+const { getSelectedPlan } = require("./permissions/helpers/data");
+const { requireAuth } = require("./permissions/helpers/requireAuth")
 
 exports.handler = requireAuth(async function(event, context) {
   console.log("purchase", event)

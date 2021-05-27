@@ -1,0 +1,12 @@
+{
+  "plans": [
+    {
+      "name": "Plan Name",
+      "description": "Plan Description",
+      "home": "/learn",
+      "role_id": "auth0_roleid",
+      "amount": 100,
+      "amount_usd": 100
+    }
+  ]
+}

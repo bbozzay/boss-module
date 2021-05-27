@@ -1,6 +1,6 @@
 // Get app_metadata
-const { management } = require("../lib/functions/app_metadata/read/management");
-const { requireAuth } = require("../lib/functions/helpers/requireAuth");
+const { management } = require("./permissions/app_metadata/read/management");
+const { requireAuth } = require("./permissions/helpers/requireAuth");
 
 exports.handler = requireAuth(async function(event, context) {
   try {

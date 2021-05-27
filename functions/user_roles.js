@@ -1,5 +1,5 @@
-const { management } = require("../lib/functions/user_role/read/management");
-const { requireAuth } = require("../lib/functions/helpers/requireAuth");
+const { management } = require("./permissions/user_role/read/management");
+const { requireAuth } = require("./permissions/helpers/requireAuth");
 
 exports.handler = requireAuth(async function(event, context) {
   const { claims } = context.identityContext;

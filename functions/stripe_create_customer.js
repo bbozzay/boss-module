@@ -1,6 +1,6 @@
-const { management } = require("../lib/functions/app_metadata/write/management");
-const { requireAuth } = require('../lib/functions/helpers/requireAuth');
-const { stripe } = require("../lib/functions/helpers/stripe")
+const { management } = require("./permissions/app_metadata/write/management");
+const { requireAuth } = require('./permissions/helpers/requireAuth');
+const { stripe } = require("./permissions/helpers/stripe")
 
 exports.handler = requireAuth(async function(event, context) {
   try {

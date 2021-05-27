@@ -1,8 +1,8 @@
 // Needs to be able to read user roles
-const { management } = require("../lib/functions/user_role/read/management")
-const { decodeVideoId } = require("../lib/functions/helpers/gatedContent");
-const { userHasRequiredRole } = require("../lib/functions/helpers/verify");
-const { requireAuth } = require("../lib/functions/helpers/requireAuth");
+const { management } = require("./permissions/user_role/read/management")
+const { decodeVideoId } = require("./permissions/helpers/gatedContent");
+const { userHasRequiredRole } = require("./permissions/helpers/verify");
+const { requireAuth } = require("./permissions/helpers/requireAuth");
 
 exports.handler = requireAuth(async function(event, context) {
   const { claims } = context.identityContext;

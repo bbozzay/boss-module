@@ -1,7 +1,7 @@
 // TODO: check for valid token and required scopes
-const { management } = require("../lib/functions/user_role/write/management");
-const { getSelectedPlan } = require("../lib/functions/helpers/data");
-const { requireAuth } = require("../lib/functions/helpers/requireAuth");
+const { management } = require("./permissions/user_role/write/management");
+const { getSelectedPlan } = require("./permissions/helpers/data");
+const { requireAuth } = require("./permissions/helpers/requireAuth");
 
 // get a token with the required scope
 exports.handler = requireAuth(async function(event, context) {
