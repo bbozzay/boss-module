@@ -16,6 +16,9 @@ export default {
     props: {
         video_id: {
             type: String,
+        },
+        role_name: {
+            type: String,
         }
     },
     data() {
@@ -29,7 +32,7 @@ export default {
     async fetch() {
         // Input from prop
         try {
-            const videoId = await this.$boss.fetchVideoId("pagespeed", this.video_id);
+            const videoId = await this.$boss.fetchVideoId(this.role_name, this.video_id);
             this.video_url = videoId ? `https://www.youtube.com/embed/${videoId}` : null
             if (!videoId) {
                 this.message = "Signup for the Pagespeed plan to watch videos in this course"
