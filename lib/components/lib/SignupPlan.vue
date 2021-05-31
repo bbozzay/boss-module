@@ -1,5 +1,5 @@
 <template>
-  <div class="signupPlan">
+  <div class="signupPlan" @click="select_plan(plan_index)">
       <h3 class="heading">{{ name }} <span class="price">(${{ price }})</span></h3>
       <p class="my-2">{{ description }}</p>
       <button class="buttonClear">
@@ -11,9 +11,16 @@
 <script>
 export default {
   props: {
+    plan_index: Number,
     name: String,
     description: String,
     price: [String, Number]
+  },
+  methods: {
+    select_plan(i) {
+      console.log("select plan")
+      this.$emit('checkout', i)
+    }
   }
 }
 </script>

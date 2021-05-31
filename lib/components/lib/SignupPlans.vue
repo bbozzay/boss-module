@@ -1,9 +1,14 @@
 <template>
     <div class="signupPlans">
         <div v-show="selectedPlanIndex === null">
-            <div v-for="(plan, i) in plans" :key="plan.index" @click="beginCheckout(i)" class="">
-                <signup-plan class="signupPlans__plan my-8" :name="plan.name" :description="plan.description" :price="plan.amount_usd">
+            <div v-for="(plan, i) in plans" :key="plan.index">
+                <signup-plan class="signupPlans__plan my-8" @checkout='beginCheckout(i, amount)' :plan_index='i' :name="plan.name" :description="plan.description" :price="plan.amount_usd >= plan.min_amount_usd ? plan.amount_usd : plan.min_amount_usd">
                 </signup-plan>
+                <div class="pwyw_input">
+                    <span>$</span>
+                    <input class="max-w-xs" type="number" v-model.number="plan.amount_usd" :min="plan.min_amount_usd" />
+                </div>
+                {{ pwyw_amount }}
             </div>
         </div>
         <div v-show="selectedPlanIndex !== null" class="signupPlans__checkout">
@@ -29,6 +34,10 @@ export default {
         plans: {
             type: Array,
             required: true
+        },
+        pwyw: {
+            type: Boolean,
+            default: false
         }
     },
     data () {
@@ -39,11 +48,14 @@ export default {
             selectedPlanAmount: null,
             paymentIntent: null,
             message: null,
-            redirectUrl: null
+            redirectUrl: null,
+            amount: null,
+            pwyw_amount: null,
         }
     },
     methods: {
         async beginCheckout(i) {
+            console.log("Begin Checkout", i)
             this.loading = true;
             this.selectedPlanIndex = i;
             // If no redirecturl was set by anything else, redirect to the plans home page
@@ -51,7 +63,7 @@ export default {
                 this.redirectUrl = this.plans[i].home;
             }
             try {
-                this.paymentIntent = await this.$boss.createPaymentIntent({plan_index: i});
+                this.paymentIntent = await this.$boss.createPaymentIntent({plan_index: i, amount: this.amount});
                 this.selectedPlanAmount = this.plans[this.selectedPlanIndex].amount_usd;
                 this.loading = false;
             } catch(err) {
@@ -113,5 +125,16 @@ export default {
         max-width: 125px;
         @apply mb-5;
         @apply mt-3;
+    }
+    input {
+        @apply h-12;
+        width: 4rem;
+        @apply border-solid;
+        @apply border-gray-400;
+        @apply border;
+        @apply p-1;
+        @apply rounded-sm;
+        @apply mb-4;
+        @apply text-base;
     }
 </style>
