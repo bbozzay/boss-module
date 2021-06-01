@@ -3,7 +3,7 @@
       <h3 class="heading">{{ name }} <span class="price">(${{ price }})</span></h3>
       <p class="my-2">{{ description }}</p>
       <button class="buttonClear">
-          Select
+          {{ button_text }}
       </button>
   </div>
 </template>
@@ -14,7 +14,11 @@ export default {
     plan_index: Number,
     name: String,
     description: String,
-    price: [String, Number]
+    price: [String, Number],
+    button_text: {
+      type: String,
+      default: "Select"
+    }
   },
   methods: {
     select_plan(i) {

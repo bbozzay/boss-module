@@ -2,25 +2,32 @@
     <div class="signupPlans">
         <div v-show="selectedPlanIndex === null">
             <div v-for="(plan, i) in plans" :key="plan.index">
-                <signup-plan class="signupPlans__plan my-8" @checkout='beginCheckout(i, amount)' :plan_index='i' :name="plan.name" :description="plan.description" :price="plan.amount_usd >= plan.min_amount_usd ? plan.amount_usd : plan.min_amount_usd">
-                </signup-plan>
-                <div class="pwyw_input">
-                    <span>$</span>
-                    <input class="max-w-xs" type="number" v-model.number="plan.amount_usd" :min="plan.min_amount_usd" />
+                <div class="pwyw_input flex flex-col items-center text-center">
+                    <div>
+                        <h3 class="heading">Enter an amount</h3>
+                        <p class="mb-2">(pay what you want - $7 minimum)</p>
+                    </div>
+                    <div>
+                        <span>$</span>
+                        <input class="max-w-xs" type="number" v-model.number="plan.amount_usd" :min="plan.min_amount_usd" />
+                    </div>
                 </div>
-                {{ pwyw_amount }}
+                <div class="flex flex-col items-center text-center">
+                    <signup-plan class="signupPlans__plan my-8" @checkout='beginCheckout(i, plan.amount_usd)' :plan_index='i' :name="plan.name" :description="plan.description" :price="plan.amount_usd >= plan.min_amount_usd ? plan.amount_usd : plan.min_amount_usd" button_text="Pay Now">
+                    </signup-plan>
+                </div>
             </div>
         </div>
-        <div v-show="selectedPlanIndex !== null" class="signupPlans__checkout">
+        <div v-show="selectedPlanIndex !== null" class="signupPlans__checkout border p-6">
+            <h3 class="heading">Checkout</h3>
             <form id="payment-form" @submit.prevent="checkout" ref="payment">
-                <div class="signupPlans__amount">${{ selectedPlanAmount }}</div>
+                <div class="signupPlans__amount">Amount: ${{ selectedPlanAmount }}</div>
                 <div id="card-element"></div>
                 <img class="vendorStripe" src="/uploads/vendor/stripe-purple.svg">
-                <button type="submit" id="submit" class="buttonBlack">Submit a Payment</button>
+                <button type="submit" id="submit" class="buttonBlack" :disabled="loading"><span v-show="loading">Loading...</span><span v-show="!loading">Submit a Payment</span></button>
             </form>
         </div>
         <div class="messages">{{ message }}</div>
-        <div class="loader" v-if="loading">LOADING</div>
     </div>
 </template>
 
@@ -54,17 +61,18 @@ export default {
         }
     },
     methods: {
-        async beginCheckout(i) {
-            console.log("Begin Checkout", i)
+        async beginCheckout(i, plan_amount_usd) {
+            console.log("Begin Checkout", i, this.plans[i])
             this.loading = true;
             this.selectedPlanIndex = i;
+            const amount = plan_amount_usd*100;
             // If no redirecturl was set by anything else, redirect to the plans home page
             if (!this.redirectUrl) {
                 this.redirectUrl = this.plans[i].home;
             }
             try {
-                this.paymentIntent = await this.$boss.createPaymentIntent({plan_index: i, amount: this.amount});
-                this.selectedPlanAmount = this.plans[this.selectedPlanIndex].amount_usd;
+                this.paymentIntent = await this.$boss.createPaymentIntent({plan_index: i, amount: amount});
+                this.selectedPlanAmount = this.paymentIntent.amount/100;
                 this.loading = false;
             } catch(err) {
                 this.message = JSON.stringify(err)
