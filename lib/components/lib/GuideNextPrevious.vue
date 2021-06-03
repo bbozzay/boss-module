@@ -1,5 +1,5 @@
 <template>
-  <ul class="next_previous">
+  <ul class="next_previous pb-6">
     <li v-if="links.previous && links.previous.path" class="previous">
       <nuxt-link :to="links.previous.path">
         {{ links.previous.title }}
