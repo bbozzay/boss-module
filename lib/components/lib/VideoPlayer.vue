@@ -9,11 +9,14 @@ export default {
   props: {
     video_id: {
       type: String
+    },
+    url_src: {
+      type: String
     }
   },
   computed: {
     video_url() {
-      return `https://www.youtube.com/embed/${this.video_id}`
+      return this.url_src? this.url_src : `https://www.youtube.com/embed/${this.video_id}`
     }
   }
 }
