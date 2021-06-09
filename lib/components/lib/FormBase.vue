@@ -73,9 +73,4 @@ export default {
   textarea {
     min-height: 125px;
   }
-  .success {
-    span {
-      background: yellow;
-    }    
-  }
 </style>
