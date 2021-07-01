@@ -45,11 +45,14 @@ export default {
     const sidebar = document.querySelector(".article_anchors");
     const content = document.querySelector(".nuxt-content");
     if (!content) return;
+    // Temp
+    return;
     let targetSelectors = content.querySelectorAll("h2");
     const activeClass = "nuxt-link-active"
     let anchors = sidebar.querySelectorAll(".anchor_link");
     let lastActiveAnchor = sidebar.getElementsByClassName(activeClass)[0];
     const toggleActive = (selector) => {
+      console.log(selector.id)
       lastActiveAnchor ? lastActiveAnchor.classList.remove(activeClass) : false;
       let sidebarAnchor = sidebar.querySelector(`.${selector.id}`);
       sidebarAnchor.classList.add(activeClass)

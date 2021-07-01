@@ -17,3 +17,6 @@ Features:
   * Course sidebar auto-generates anchor links
   * Previous/next links
   * Mix free content with premium content for better upselling
+
+NOTES:
+`nuxt content` is wrapping images with p tags. Use this plugin to unwrap: `npm install remark-unwrap-images`
