@@ -132,7 +132,7 @@ export default {
   }
   @media (min-width: 1024px) {
     #sidebar {
-      height: calc(100vh - 4.5rem);
+      //height: calc(100vh - 4.5rem);
       top: 75px;
     }
     #navWrapper {

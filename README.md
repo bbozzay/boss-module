@@ -20,3 +20,8 @@ Features:
 
 NOTES:
 `nuxt content` is wrapping images with p tags. Use this plugin to unwrap: `npm install remark-unwrap-images`
+
+
+## 7/9/2021
+loginThenRedirect()
+`await this.$boss.loginThenRedirect({url: redirectUrl, screen_hint: "login"});`
