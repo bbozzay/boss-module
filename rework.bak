@@ -1,0 +1,247 @@
+
+// import * as auth from './helpers/auth';
+// import * as user from './helpers/user';
+// import * as api from './api';
+    // Adds an encoded param to the login URL containing the state
+    // When the login is successful, the callback url (probably /login) will reload with the encoded redirectUrl
+    // Middleware can then decode and redirect the user
+    // If no URL arg is supplied, defaults to store.redirectUrl, which is the page the user was on before login
+    async hasRole() {
+      // No specific role specified yet. TODO
+      const userRoles = await this.fetchUserRoles();
+      if (!userRoles || userRoles.length == 0) {
+        return false
+      }
+      let allowedRoles = options.requireRole.default;
+      Array.isArray(allowedRoles) ? allowedRoles = allowedRoles : allowedRoles = [allowedRoles]
+      const supportedRoles = ["premium", ...allowedRoles];
+      let hasRole = false;
+      // fetchUserRoles
+      for (let i = 0; i < supportedRoles.length; i++) {
+        let matched = userRoles.filter(userRole => supportedRoles[i] == userRole.name);
+        matched.length > 0 ? hasRole = true : false;
+      }
+      return hasRole
+    },
+    // Fetch user_metadata and app_metadata
+    // Auth0
+    setUserMeta(body) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const meta = await this.lambdaPost("auth0_update_user_metadata", payload);
+          const storeMeta = user.setUserMeta({ namespace, store }, meta)
+          return resolve(storeMeta)
+        } catch(err) {
+          return reject(err)
+        }
+      })
+    },
+
+    requireLogin() {
+      const { $auth, redirect } = context;
+      if (!$auth.loggedIn) {
+          return redirect(`${options.paths.login}/?redirectUrl=${route.path}`)
+      }
+    },
+    async requireRole() {
+      // Redirect if false
+      let hasRole = await this.hasRole();
+      if (hasRole) {
+        return
+      }
+      app.router.push({
+        path: `${options.paths.signup}?redirectUrl=${route.path}`
+      })
+    },
+    // Get
+    fetchUserRoles() {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const roles = await this.lambdaGet("auth0_get_user_roles")
+          store.commit(`${namespace}/access/roles`, roles)
+          return resolve(roles)
+        } catch(err) {
+          console.log("fetchUserRoles", err.message)
+          return reject(err)
+        }
+      })
+    },
+
+    fetchVideoId(role, videoId) {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { $auth } = context;
+          const video_id = await this.lambdaGet("boss_get_video_id", {
+            role: role,
+            video_id: video_id
+          })
+          return video_id;
+        } catch(err) {
+          console.log("fetchUserRoles", err.message)
+          return reject(err)
+        }
+      })
+    },
+    createCustomer() {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { $auth } = context;
+          const { user } = $auth;
+          const customerID = await api.createCustomer({apiBaseUrl, $auth, route}, user.email)
+          // Refresh meta state
+          // Could maybe save an API call by updating the store state directly
+          await this.fetchMeta();
+          return resolve(customerID)
+        } catch(err) {
+          console.log("err", err)
+          return reject(err)
+        }
+      })
+    },
+    // Retrieve the stripe ID if meta exists
+    getCustomerId() {
+      return this.getAppMeta() ? this.getAppMeta().stripe_customer_id : null
+    },
+    createThenCheckout(card, meta) {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { plan_index } = meta;
+          const { $stripe } = context;
+          const paymentIntent = await this.createPaymentIntent({plan_index});
+          const { client_secret } = paymentIntent;
+          try {
+            const payment = await $stripe.confirmCardPayment(client_secret, {
+              payment_method: {
+                card: card,
+              }
+            })
+            if (payment.paymentIntent.status === 'succeeded') {
+              const plan = await this.addUserToRole({
+                plan_index: plan_index
+              })
+              return resolve(plan)
+            }
+          } catch(err) {
+            console.log("payment err", err)
+            return reject(err)
+          }
+        } catch(err) {
+          console.log("checkout", err)
+          return reject(err)
+        }
+      })
+    },
+    // Submit the card payment and add the role if it succeeds
+    confirmCardPayment(card, paymentIntent) {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { client_secret, plan_index } = paymentIntent;
+          const { $stripe } = context;
+          const payment = await $stripe.confirmCardPayment(client_secret, {
+            payment_method: {
+              card: card,
+            }
+          })
+          // This should probably lookup the payment ID before continuing
+          if (payment.paymentIntent.status === 'succeeded') {
+            const plan = await this.addUserToRole({
+              plan_index: plan_index
+            })
+            return resolve(plan)
+          }
+        } catch(err) {
+          console.log("payment err", err)
+          return reject(err)
+        }
+      })
+    },
+    // Payment intent from stripe
+    createPaymentIntent({plan_index, amount}) {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { $auth } = context;
+          const customer_id = this.getCustomerId() ? this.getCustomerId() : await this.createCustomer();
+          const paymentIntent = await api.createPaymentIntent({apiBaseUrl, $auth}, {
+            customer_id: customer_id,
+            email: $auth.user.email,
+            plan_index: plan_index,
+            amount: amount
+          });
+          return resolve(paymentIntent)
+        } catch(err) {
+          console.log("createPaymentIntent", err)
+          return reject(err)
+        }
+      })
+    },
+    createSubscriptionIntent({plan_index, amount}) {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { $auth } = context;
+          const customer_id = this.getCustomerId() ? this.getCustomerId() : await this.createCustomer();
+          // for devMode only
+          this.log("Customer_ID" + customer_id)
+          const paymentIntent = await api.createSubscriptionIntent({apiBaseUrl, $auth}, {
+            customer_id: customer_id,
+            plan_index: plan_index,
+          });
+          return resolve(paymentIntent)
+        } catch(err) {
+          console.log("createPaymentIntent", err)
+          return reject(err)
+        }
+      })
+    },
+    getSubscription({plan_index, status}) {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { $auth } = context;
+          const customer_id = this.getCustomerId() ? this.getCustomerId() : await this.createCustomer();
+          console.log("Customer ID", customer_id)
+          const subscription = await api.getSubscription({apiBaseUrl, $auth}, {
+            customer_id: customer_id,
+            plan_index: plan_index,
+            status: status
+          });
+          return resolve(subscription)
+        } catch(err) {
+          console.log("createPaymentIntent", err)
+          return reject(err)
+        }
+      })
+    },
+    createCustomerPortalSession() {
+      return new Promise(async(resolve, reject) => {
+        try {
+          const { $auth } = context;
+          const customer_id = this.getCustomerId() ? this.getCustomerId() : await this.createCustomer();
+          const portal_url = await api.createCustomerPortalSession({apiBaseUrl, $auth}, {
+            customer_id: customer_id
+          });
+          return resolve(portal_url)
+        } catch(err) {
+          console.log("createPaymentIntent", err)
+          return reject(err)
+        }
+      })
+    },
+
+    // Needed?
+    getAppMeta() {
+      return user.getAppMeta({state, namespace})
+    },
+    getUserMeta() {
+      return user.getUserMeta({state, namespace})
+    },
+
+    // EXTRA
+    // Newsletter and email functions
+    elasticMail(options) {
+      if (!elasticMail) {
+        throw "ElasticMail not configured"
+        return
+      }
+      let { apiBaseUrl, publicAccountID } = elasticMail;
+      let newsletter = new api.ElasticMail({ apiBaseUrl, publicAccountID })
+      return newsletter.init()
+    }
