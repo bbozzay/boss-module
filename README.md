@@ -17,13 +17,3 @@ Features:
   * Course sidebar auto-generates anchor links
   * Previous/next links
   * Mix free content with premium content for better upselling
-
-NOTES:
-`nuxt content` is wrapping images with p tags. Use this plugin to unwrap: `npm install remark-unwrap-images`
-
-
-## 7/13/2021
-* Nuxt auth login events do not fire consistently. The workaround for this is to set redirects.home to false and to use the Boss methods for fetching user data and logged in state on page load (after being redirect from auth0).
-## 7/9/2021
-loginThenRedirect()
-`await this.$boss.loginThenRedirect({url: redirectUrl, screen_hint: "login"});`
