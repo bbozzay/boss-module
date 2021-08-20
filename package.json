@@ -1,44 +1,56 @@
 {
-  "name": "nuxt-boss",
-  "version": "1.0.0",
-  "description": "Gated content learning management system for static sites built on Nuxt.",
-  "main": "lib/module.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bbozzay/nuxt-boss.git"
-  },
-  "keywords": [
-    "nuxt",
-    "lms",
-    "\"gated",
-    "content\"",
-    "jamstack"
+  "name": "boss",
+  "version": "0.0.0",
+  "description": "Static site gated content system.",
+  "repository": "bbozzay/nuxt-boss",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Ben Bozzay <ben@fullstackdigital.com>"
+    }
   ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/module.js",
+  "scripts": {
+    "dev": "nuxt example -r .env",
+    "generate": "nuxt generate example -r .env && nuxt start example",
+    "lint": "eslint --ext .js,.vue .",
+    "release": "yarn test && standard-version && git push --follow-tags && npm publish",
+    "test": "DEBUG=false jest --setupFiles dotenv/config"
+  },
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
-    "@nuxtjs/auth-next": "5.0.0-1613647907.37b1156",
-    "auth0": "^2.34.1",
+    "@nuxtjs/auth-next": "5.0.0-1624817847.21691f1",
+    "@nuxtjs/axios": "^5.13.6",
     "base64url": "^3.0.1",
+    "delay": "^5.0.0",
+    "fs": "0.0.1-security",
+    "netlify-cli": "^6.0.3",
     "node-fetch": "^2.6.1",
     "nuxt-stripe-module": "^3.2.0",
-    "stripe": "^8.144.0",
-    "vuelidate": "^0.7.6"
+    "stripe": "^8.168.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.13.15",
-    "@nuxt/test-utils": "^0.2.0",
-    "luminous-lightbox": "^2.3.3"
+    "@babel/core": "latest",
+    "@babel/preset-env": "latest",
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
+    "@nuxtjs/eslint-config": "latest",
+    "@nuxtjs/module-test-utils": "latest",
+    "@serverless-jwt/netlify": "^0.2.1",
+    "auth0": "^2.36.1",
+    "babel-eslint": "latest",
+    "babel-jest": "latest",
+    "eslint": "latest",
+    "husky": "latest",
+    "jest": "latest",
+    "nuxt-edge": "latest",
+    "path": "^0.12.7",
+    "luminous-lightbox": "^2.3.3",
+    "standard-version": "latest"
   },
-  "author": "Ben Bozzay",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bbozzay/nuxt-boss/issues"
-  },
-  "homepage": "https://github.com/bbozzay/nuxt-boss#readme"
+  "publishConfig": {
+    "access": "public"
+  }
 }

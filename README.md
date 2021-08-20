@@ -1,29 +1,62 @@
-# Nuxt Boss
-A framework for building gated content websites. Supports Serverless/JAMStack.
+# boss
 
-The module provides components and a helper plugin. Lambda function templates are provided, but can be overridden with your own.
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![Github Actions CI][github-actions-ci-src]][github-actions-ci-href]
+[![Codecov][codecov-src]][codecov-href]
+[![License][license-src]][license-href]
 
-Features:
-* static authentication with auth0
-* components built with TailWind
-* Role-based gated content
-  * Paid user roles
-  * Role-based routes or gated embedded videos
-* Redirect after login logic extended to support more useful cases
-  * Redirect to a referring route or dynamic route
-  * Redirect logic for dedicated login pages
-* Course content
-  * Generate courses using re-used content 
-  * Course sidebar auto-generates anchor links
-  * Previous/next links
-  * Mix free content with premium content for better upselling
+> Static site gated content system.
 
-NOTES:
-`nuxt content` is wrapping images with p tags. Use this plugin to unwrap: `npm install remark-unwrap-images`
+[📖 **Release Notes**](./CHANGELOG.md)
 
+## Setup
 
-## 7/13/2021
-* Nuxt auth login events do not fire consistently. The workaround for this is to set redirects.home to false and to use the Boss methods for fetching user data and logged in state on page load (after being redirect from auth0).
-## 7/9/2021
-loginThenRedirect()
-`await this.$boss.loginThenRedirect({url: redirectUrl, screen_hint: "login"});`
+1. Add `boss` dependency to your project
+
+```bash
+yarn add boss # or npm install boss
+```
+
+2. Add `boss` to the `modules` section of `nuxt.config.js`
+
+```js
+{
+  modules: [
+    // Simple usage
+    'boss',
+  ],
+  boss: {
+    // Options
+  }
+}
+```
+
+## Development
+
+1. Clone this repository
+2. Install dependencies using `yarn install` or `npm install`
+3. Start development server using `netlify dev`
+4. Run tests with `npm run test` (requires development server to be running)
+
+## License
+
+[MIT License](./LICENSE)
+
+Copyright (c) Ben Bozzay <ben@fullstackdigital.com>
+
+<!-- Badges -->
+[npm-version-src]: https://img.shields.io/npm/v/boss/latest.svg
+[npm-version-href]: https://npmjs.com/package/boss
+
+[npm-downloads-src]: https://img.shields.io/npm/dt/boss.svg
+[npm-downloads-href]: https://npmjs.com/package/boss
+
+[github-actions-ci-src]: https://github.com/bbozzay/nuxt-boss/workflows/ci/badge.svg
+[github-actions-ci-href]: https://github.com/bbozzay/nuxt-boss/actions?query=workflow%3Aci
+
+[codecov-src]: https://img.shields.io/codecov/c/github/bbozzay/nuxt-boss.svg
+[codecov-href]: https://codecov.io/gh/bbozzay/nuxt-boss
+
+[license-src]: https://img.shields.io/npm/l/boss.svg
+[license-href]: https://npmjs.com/package/boss

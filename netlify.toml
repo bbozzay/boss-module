@@ -1,0 +1,12 @@
+[build]
+  functions = "./lambda"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+  port = 8888
+  framework = "#custom"
+  publish = "example/dist"
+
+[functions]
+  node_bundler = "esbuild"
